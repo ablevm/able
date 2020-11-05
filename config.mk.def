@@ -1,0 +1,19 @@
+PREFIX?=/usr/local/able
+BINDIR=${PREFIX}/bin
+INCDIR=${PREFIX}/include
+LIBDIR=${PREFIX}/lib
+MANDIR=${PREFIX}/man
+
+CC=clang
+CFLAGS=-I${INCDIR} -g -O2 -std=c11 -pedantic -Wall -Wno-zero-length-array -Wno-gnu-label-as-value -Wno-gnu-designator -Wno-gnu-empty-struct
+
+.ifdef DEBUG
+CFLAGS+=-DDEBUG=${DEBUG}
+.endif
+
+.ifdef COMPAT_LINUX
+CFLAGS+=-DABLE_COMPAT_LINUX -D_GNU_SOURCE
+.endif
+
+LD=${CC}
+LDFLAGS=-L${LIBDIR}

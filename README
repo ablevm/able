@@ -1,0 +1,49 @@
+WELCOME TO ABLE!
+
+able implements an efficient, portable and secure general-purpose virtual
+machine and virtual network using libable
+
+GETTING STARTED
+
+BSD Make and Clang are required to build and install able
+
+Building and installing on OpenBSD
+
+$ cp config.mk.def config.mk
+$ make install
+...
+$ 
+
+Building and installing on Ubuntu
+
+# apt install bmake clang
+...
+# exit
+$ cp config.mk.def config.mk
+$ bmake -DCOMPAT_LINUX install
+...
+$ 
+
+Building and installing on macOS
+
+# brew install bmake
+...
+# exit
+$ cp config.mk.def config.mk
+$ bmake -DCOMPAT_MACOS install
+...
+$ 
+
+GETTING INVOLVED
+
+Contact Details
+
+Find us online at ablevm.org or email us at team@ablevm.org
+
+Code of Conduct
+
+Respect each other and please don't spam
+
+LICENSE
+
+ISC-style license
