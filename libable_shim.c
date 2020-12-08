@@ -18,7 +18,7 @@ able_link_post_shim(able_link_t *link, able_edge_t *edge) {
 }
 
 #define P(C, Y) \
-	fprintf(stderr, "%02"PRIX8"(%"PRId8") %"PRId64" %08"PRIX64" %"PRId64"/%"PRIX64" %"PRId64"/%"PRIX64" (%"PRIu8"); %"PRId64"/%"PRIX64" (%"PRIu8")\n", \
+	fprintf(stderr, "%02"PRIX8"(%d) %"PRId64" %08"PRIX64" %"PRId64"/%"PRIX64" %"PRId64"/%"PRIX64" (%"PRIu8"); %"PRId64"/%"PRIX64" (%"PRIu8")\n", \
 		(C)->i, \
 		(Y), \
 		(C)->ts, \
