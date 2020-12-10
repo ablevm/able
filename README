@@ -5,7 +5,7 @@ machine and virtual network using libable
 
 GETTING STARTED
 
-BSD Make and Clang are required to build and install able
+able only requires libable, BSD Make and Clang to build and install
 
 Building and installing on OpenBSD
 
