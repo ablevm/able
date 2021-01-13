@@ -2,6 +2,8 @@
 #include "trap.h"
 #include <stdlib.h>
 
+trap_data_t trap_data;
+
 void
 trap(int kind) {
 	int q;
