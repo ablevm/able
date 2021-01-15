@@ -1,5 +1,5 @@
 BIN?=able
-SRCS=trap.c libable_shim.c term.c able.c
+SRCS=libable_shim.c trap.c host.c term.c able.c
 LIBS=-lpthread -lable
 
 .include "config.mk"

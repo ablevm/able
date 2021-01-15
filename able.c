@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include "trap.h"
-#include "libable_shim.h"
+#include "host.h"
 #include "term.h"
 
 extern char *__progname;
@@ -148,7 +148,7 @@ main(int argc, char *argv[]) {
 
 	able_task_t h0t;
 	memset(&h0t, 0, sizeof(h0t));
-	h0t.ef = (able_task_exec_t)able_host_exec_shim;
+	h0t.ef = (able_task_exec_t)host_exec;
 	h0t.t = &h0;
 
 	able_wire_t h0w[256];
