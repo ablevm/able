@@ -106,8 +106,8 @@ main(int argc, char *argv[]) {
 
 	able_task_t i0t;
 	memset(&i0t, 0, sizeof(i0t));
-	i0t.f = (able_task_exec_t)term_recv_exec;
-	i0t.u = &i0;
+	i0t.ef = (able_task_exec_t)term_recv_exec;
+	i0t.t = &i0;
 
 	able_wire_t i0w[256];
 	memset(&i0w, 0, sizeof(i0w));
@@ -121,8 +121,8 @@ main(int argc, char *argv[]) {
 
 	able_task_t o0t;
 	memset(&o0t, 0, sizeof(o0t));
-	o0t.f = (able_task_exec_t)term_send_exec;
-	o0t.u = &o0;
+	o0t.ef = (able_task_exec_t)term_send_exec;
+	o0t.t = &o0;
 
 	able_wire_t o0w[256];
 	memset(&o0w, 0, sizeof(o0w));
@@ -137,19 +137,19 @@ main(int argc, char *argv[]) {
 	memset(h0l, 0, sizeof(h0l));
 	able_host_t h0;
 	memset(&h0, 0, sizeof(h0));
+	h0.n = &h0n;
 	h0.p = h0p;
 	h0.pc = 256;
 	h0.l = h0l;
 	h0.lc = 256;
 	h0.c.b = b;
 	h0.c.bc = bc;
-	h0.u = &h0n;
 	h0.ts = 1000;
 
 	able_task_t h0t;
 	memset(&h0t, 0, sizeof(h0t));
-	h0t.f = (able_task_exec_t)able_host_exec_shim;
-	h0t.u = &h0;
+	h0t.ef = (able_task_exec_t)able_host_exec_shim;
+	h0t.t = &h0;
 
 	able_wire_t h0w[256];
 	memset(&h0w, 0, sizeof(h0w));
