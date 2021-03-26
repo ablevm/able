@@ -42,7 +42,7 @@ host_exec(able_host_t *host) {
 		y = able_host_exec(host);
 		switch (y) {
 			case -1: // end of timeslice
-				able_host_wait_shim(host, NULL, NULL);
+				able_host_node_wait_shim(host->n, NULL, NULL);
 				return y;
 			case -2: // bad memory access
 			case -3: // divide by zero

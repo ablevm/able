@@ -3,11 +3,16 @@
 #include <able/able.h>
 
 int
-able_host_wait_shim(able_host_t *host, able_edge_t *edge, const struct timespec *time) {
-	return able_node_wait(host->n, edge, time);
+able_host_node_wait_shim(void *node, able_edge_t *edge, const struct timespec *time) {
+	return able_node_wait(node, edge, time);
 }
 
 int
-able_link_post_shim(able_link_t *link, able_edge_t *edge) {
-	return able_node_post(link->n, edge);
+able_host_link_send_shim(void *link, void *data, size_t size) {
+	return able_link_send(link, data, size);
+}
+
+int
+able_link_node_post_shim(void *node, able_edge_t *edge) {
+	return able_node_post(node, edge);
 }

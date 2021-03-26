@@ -133,8 +133,11 @@ main(int argc, char *argv[]) {
 
 	able_port_t h0p[256];
 	memset(h0p, 0, sizeof(h0p));
-	able_link_t h0l[256];
-	memset(h0l, 0, sizeof(h0l));
+	able_link_t h0l_[256];
+	memset(h0l_, 0, sizeof(h0l_));
+	void *h0l[256];
+	for (int i = 0; i < 256; i++)
+		h0l[i] = &h0l_[i];
 	able_host_t h0;
 	memset(&h0, 0, sizeof(h0));
 	h0.n = &h0n;
@@ -164,7 +167,7 @@ main(int argc, char *argv[]) {
 	able_wire_join(&h0w[1], &i0.l);
 	// o0.p<-h0.l[0]
 	able_wire_bind(&o0w[0], &o0.p, 0, &o0.n);
-	able_wire_join(&o0w[0], &h0.l[0]);
+	able_wire_join(&o0w[0], h0.l[0]);
 	// h0.p[0]<-o0.l
 	able_wire_bind(&h0w[0], &h0.p[0], 0, &h0n);
 	able_wire_join(&h0w[0], &o0.l);
