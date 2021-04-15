@@ -37,7 +37,7 @@ term_recv_exec(term_recv_t *term_recv) {
 int
 term_send_exec(term_send_t *term_send) {
 	for (;;) {
-		able_port_clip(&term_send->p, term_send->b, term_send->bc);
+		while (able_port_clip(&term_send->p, term_send->b, term_send->bc) < 0);
 		able_port_mesg_t *m;
 		while ((m = able_port_recv(&term_send->p)) == NULL)
 			able_node_wait(&term_send->n, &term_send->p.e, NULL);
