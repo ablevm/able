@@ -19,23 +19,32 @@
 		(C)->c0, (C)->c0, \
 		(C)->cp);
 
+#define DSI(C) \
+	(C)->d[(C)->dp] = (C)->d1; \
+	(C)->dp = (C)->dp + 1 & 31; \
+	(C)->d1 = (C)->d0;
+
+#define DSR(C) \
+	(C)->d0 = 0; \
+	(C)->d1 = 0; \
+	memset((C)->d, 0, sizeof((C)->d)); \
+	(C)->dp = 0;
+
+#define CSR(C) \
+	(C)->c0 = 0; \
+	memset((C)->c, 0, sizeof((C)->c)); \
+	(C)->cp = 0;
+
 int
 host_exec(able_host_t *host) {
 	for (;;) {
-		able_host_t *h;
-		h = trap_data.u;
-		if (h == host) {
+		if (host == trap_data.u) {
 			int q;
 			q = atomic_exchange(&trap_data.q, 0);
 			if (q == 1) {
-				h->c.p = 0;
-				h->c.d0 = 0;
-				h->c.d1 = 0;
-				memset(h->c.d, 0, sizeof(h->c.d));
-				h->c.dp = 0;
-				h->c.c0 = 0;
-				memset(h->c.c, 0, sizeof(h->c.c));
-				h->c.cp = 0;
+				host->c.p = 0;
+				DSR(&host->c);
+				CSR(&host->c);
 			}
 		}
 		int y;
@@ -53,6 +62,22 @@ host_exec(able_host_t *host) {
 				break;
 			case -4: // illegal instruction
 				switch (host->c.i) {
+					case 0x85: // reset
+						host->c.p = 0;
+						DSR(&host->c);
+						CSR(&host->c);
+						break;
+					case 0x86: { // depth
+						uint8_t dp;
+						dp = host->c.dp;
+						uint8_t cp;
+						cp = host->c.cp;
+						DSI(&host->c);
+						host->c.d0 = cp;
+						DSI(&host->c);
+						host->c.d0 = dp;
+						break;
+					}
 					case 0xfe: // debug
 						P(&host->c, y);
 						break;

@@ -52,4 +52,6 @@ DETAILS
 
 Extended Instruction Set
 
+85  reset
+86  depth
 FE  debug
