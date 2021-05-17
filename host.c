@@ -53,7 +53,7 @@ host_exec(able_host_t *host) {
 				break;
 			case -4: // illegal instruction
 				switch (host->c.i) {
-					case 0x85: // debug
+					case 0xfe: // debug
 						P(&host->c, y);
 						break;
 					default:
