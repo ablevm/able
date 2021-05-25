@@ -103,6 +103,16 @@ host_exec(able_host_t *host) {
 				break;
 			case -5: // start of timeslice
 				return y;
+			case -6: // stack underflow
+				DSR(&host->c);
+				CSR(&host->c);
+				T(&host->c, 6);
+				break;
+			case -7: // stack overflow
+				DSR(&host->c);
+				CSR(&host->c);
+				T(&host->c, 7);
+				break;
 		}
 	}
 
