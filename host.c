@@ -7,40 +7,52 @@
 #include <string.h>
 #include "trap.h"
 
-#define P(C, Y) \
-	fprintf(stderr, "%02"PRIX8"(%d) %"PRId64" %08"PRIX64" %"PRId64"/%"PRIX64" %"PRId64"/%"PRIX64" (%"PRIu8"); %"PRId64"/%"PRIX64" (%"PRIu8")\n", \
-		(C)->i, \
-		(Y), \
-		(C)->ts, \
-		(C)->p, \
-		(C)->d1, (C)->d1, \
-		(C)->d0, (C)->d0, \
-		(C)->dp, \
-		(C)->c0, (C)->c0, \
-		(C)->cp);
+#define DSO ABLE_CORE_DSO
+#define DSI ABLE_CORE_DSI
 
-#define DSI(C) \
-	(C)->d[(C)->dp] = (C)->d1; \
-	(C)->dp = (C)->dp + 1 & 31; \
-	(C)->d1 = (C)->d0;
+#define DS0 ABLE_CORE_DSV(&host->c, 1)
+#define DS1 ABLE_CORE_DSV(&host->c, 2)
+#define CS0 ABLE_CORE_CSV(&host->c, 1)
 
 #define DSR(C) \
-	(C)->d0 = 0; \
-	(C)->d1 = 0; \
-	memset((C)->d, 0, sizeof((C)->d)); \
 	(C)->dp = 0;
 
 #define CSR(C) \
-	(C)->c0 = 0; \
-	memset((C)->c, 0, sizeof((C)->c)); \
 	(C)->cp = 0;
 
-#define T(C, N) \
-	DSI(C); \
-	host->c.d0 = host->c.p - 1; \
-	DSI(C); \
-	host->c.d0 = (N); \
-	host->c.p = 0;
+#define T(C, Y) { \
+		int y; \
+		y = (Y); \
+		if (DSO(C, 2)) { \
+			DSR(C); \
+			CSR(C); \
+			y = 9; \
+		} \
+		DSI(C); \
+		DS0 = host->c.p - 1; \
+		DSI(C); \
+		DS0 = y; \
+		host->c.p = 0; \
+	}
+
+#define P(C, Y) { \
+		int64_t d0; \
+		d0 = (C)->dp < 1 ? 0 : DS0; \
+		int64_t d1; \
+		d1 = (C)->dp < 2 ? 0 : DS1; \
+		uint64_t c0; \
+		c0 = (C)->cp < 1 ? 0 : CS0; \
+		fprintf(stderr, "%02"PRIX8"(%d) %"PRId64" %08"PRIX64" %"PRId64"/%"PRIX64" %"PRId64"/%"PRIX64" (%"PRIu8"); %"PRId64"/%"PRIX64" (%"PRIu8")\n", \
+			(C)->i, \
+			(Y), \
+			(C)->ts, \
+			(C)->p, \
+			d1, d1, \
+			d0, d0, \
+			(C)->dp, \
+			c0, c0, \
+			(C)->cp); \
+	}
 
 int
 host_init(able_host_t *host) {
@@ -80,14 +92,20 @@ host_exec(able_host_t *host) {
 						T(&host->c, 0);
 						break;
 					case 0x86: { // depth
+						if (DSO(&host->c, 2)) {
+							DSR(&host->c);
+							CSR(&host->c);
+							T(&host->c, 7);
+							break;
+						}
 						uint8_t dp;
 						dp = host->c.dp;
 						uint8_t cp;
 						cp = host->c.cp;
 						DSI(&host->c);
-						host->c.d0 = cp;
+						DS0 = cp;
 						DSI(&host->c);
-						host->c.d0 = dp;
+						DS0 = dp;
 						break;
 					}
 					case 0xfe: // debug
