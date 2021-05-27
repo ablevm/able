@@ -152,6 +152,7 @@ main(int argc, char *argv[]) {
 	h0.c.b = b;
 	h0.c.bc = bc;
 	h0.ts = 1000;
+	host_init(&h0);
 
 	able_task_t h0t;
 	memset(&h0t, 0, sizeof(h0t));

@@ -35,6 +35,19 @@
 	memset((C)->c, 0, sizeof((C)->c)); \
 	(C)->cp = 0;
 
+#define T(C, N) \
+	DSI(C); \
+	host->c.d0 = host->c.p - 1; \
+	DSI(C); \
+	host->c.d0 = (N); \
+	host->c.p = 0;
+
+int
+host_init(able_host_t *host) {
+	T(&host->c, 1);
+	return 0;
+}
+
 int
 host_exec(able_host_t *host) {
 	for (;;) {
@@ -42,9 +55,9 @@ host_exec(able_host_t *host) {
 			int q;
 			q = atomic_exchange(&trap_data.q, 0);
 			if (q == 1) {
-				host->c.p = 0;
 				DSR(&host->c);
 				CSR(&host->c);
+				T(&host->c, 0);
 			}
 		}
 		int y;
@@ -54,18 +67,17 @@ host_exec(able_host_t *host) {
 				able_host_node_wait_shim(host->n, NULL, NULL);
 				return y;
 			case -2: // bad memory access
+				T(&host->c, 2);
+				break;
 			case -3: // divide by zero
-#ifdef DEBUG
-				P(&host->c, y);
-#endif
-				host->c.p = 0;
+				T(&host->c, 3);
 				break;
 			case -4: // illegal instruction
 				switch (host->c.i) {
 					case 0x85: // reset
-						host->c.p = 0;
 						DSR(&host->c);
 						CSR(&host->c);
+						T(&host->c, 0);
 						break;
 					case 0x86: { // depth
 						uint8_t dp;
@@ -85,7 +97,7 @@ host_exec(able_host_t *host) {
 #ifdef DEBUG
 						P(&host->c, y);
 #endif
-						host->c.p = 0;
+						T(&host->c, 4);
 						break;
 				}
 				break;
