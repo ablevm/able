@@ -113,6 +113,9 @@ host_exec(able_host_t *host) {
 				CSR(&host->c);
 				T(&host->c, 7);
 				break;
+			case -8: // illegal register
+				T(&host->c, 8);
+				break;
 		}
 	}
 
