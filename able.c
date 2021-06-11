@@ -146,6 +146,8 @@ main(int argc, char *argv[]) {
 	memset(h0d, 0, sizeof(h0d));
 	uint64_t h0c[32];
 	memset(h0c, 0, sizeof(h0c));
+	uint64_t h0r[32];
+	memset(h0r, 0, sizeof(h0r));
 	able_host_t h0;
 	memset(&h0, 0, sizeof(h0));
 	h0.n = &h0n;
@@ -159,6 +161,8 @@ main(int argc, char *argv[]) {
 	h0.c.dc = 32;
 	h0.c.c = h0c;
 	h0.c.cc = 32;
+	h0.c.r = h0r;
+	h0.c.rc = 32;
 	h0.ts = 1000;
 	host_init(&h0);
 
