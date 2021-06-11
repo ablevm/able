@@ -113,10 +113,14 @@ main(int argc, char *argv[]) {
 	memset(&i0w, 0, sizeof(i0w));
 
 	// terminal output
+	void *o0b;
+	o0b = malloc(1024);
+	if (o0b == NULL)
+		err(4, "malloc");
 	term_send_t o0;
 	memset(&o0, 0, sizeof(o0));
 	able_node_init(&o0.n);
-	o0.b = malloc(1024);
+	o0.b = o0b;
 	o0.bc = 1024;
 
 	able_task_t o0t;
