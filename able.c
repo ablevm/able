@@ -3,6 +3,7 @@
 #include <able/able.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdbool.h>
 #include <err.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -18,7 +19,7 @@ extern char *__progname;
 
 void
 usage() {
-	fprintf(stderr, "usage: %s [-hv] [-s size] [file]\n", __progname);
+	fprintf(stderr, "usage: %s [-h] [-d size] [-c size] [-r size] [-m size] [file]\n", __progname);
 	exit(1);
 }
 
@@ -41,23 +42,49 @@ eatoi(const char *s) {
 
 int
 main(int argc, char *argv[]) {
-	int v;
-	v = 0;
-	long bc;
-	bc = 0;
-	char *ifn;
-	ifn = NULL;
+	bool dopt;
+	dopt = false;
+	uint16_t doptarg;
+	doptarg = 32;
+	bool copt;
+	copt = false;
+	uint16_t coptarg;
+	coptarg = 32;
+	bool ropt;
+	ropt = false;
+	uint8_t roptarg;
+	roptarg = 32;
+	bool mopt;
+	mopt = false;
+	uint64_t moptarg;
+	moptarg = 0;
 
 	char c;
-	while ((c = getopt(argc, argv, "hvs:")) != -1) {
+	while ((c = getopt(argc, argv, "hd:c:r:m:")) != -1) {
 		switch (c) {
-			case 's':
-				if (bc != 0)
+			case 'd':
+				if (dopt)
 					usage();
-				bc = eatoi(optarg);
+				dopt = true;
+				doptarg = eatoi(optarg);
 				break;
-			case 'v':
-				v++;
+			case 'c':
+				if (copt)
+					usage();
+				copt = true;
+				coptarg = eatoi(optarg);
+				break;
+			case 'r':
+				if (ropt)
+					usage();
+				ropt = true;
+				roptarg = eatoi(optarg);
+				break;
+			case 'm':
+				if (mopt)
+					usage();
+				mopt = true;
+				moptarg = eatoi(optarg);
 				break;
 			case 'h':
 			default:
@@ -68,6 +95,7 @@ main(int argc, char *argv[]) {
 	argc -= optind;
 	argv += optind;
 
+	char *ifn;
 	switch (argc) {
 		case 0:
 			asprintf(&ifn, "%s.img", __progname);
@@ -79,13 +107,13 @@ main(int argc, char *argv[]) {
 			usage();
 	}
 
-	if (bc == 0) {
+	if (moptarg == 0) {
 		struct stat ifs;
-		int rc;
-		rc = stat(ifn, &ifs);
-		if (rc == -1)
+		int y;
+		y = stat(ifn, &ifs);
+		if (y == -1)
 			err(3, "%s", ifn);
-		bc = ifs.st_size;
+		moptarg = ifs.st_size;
 	}
 
 	int ifd;
@@ -93,7 +121,7 @@ main(int argc, char *argv[]) {
 	if (ifd == -1)
 		err(3, "open");
 	void *b;
-	b = mmap(NULL, bc, PROT_READ|PROT_WRITE, MAP_SHARED, ifd, 0);
+	b = mmap(NULL, moptarg, PROT_READ|PROT_WRITE, MAP_SHARED, ifd, 0);
 	if (b == MAP_FAILED)
 		err(3, "mmap");
 	close(ifd);
@@ -142,12 +170,18 @@ main(int argc, char *argv[]) {
 	void *h0l[256];
 	for (int i = 0; i < 256; i++)
 		h0l[i] = &h0l_[i];
-	int64_t h0d[32];
-	memset(h0d, 0, sizeof(h0d));
-	uint64_t h0c[32];
-	memset(h0c, 0, sizeof(h0c));
-	uint64_t h0r[32];
-	memset(h0r, 0, sizeof(h0r));
+	int64_t *h0d;
+	h0d = calloc(sizeof(int64_t), doptarg);
+	if (h0d == NULL)
+		err(4, "calloc");
+	uint64_t *h0c;
+	h0c = calloc(sizeof(uint64_t), coptarg);
+	if (h0c == NULL)
+		err(4, "calloc");
+	uint64_t *h0r;
+	h0r = calloc(sizeof(uint64_t), roptarg);
+	if (h0r == NULL)
+		err(4, "calloc");
 	able_host_t h0;
 	memset(&h0, 0, sizeof(h0));
 	h0.n = &h0n;
@@ -156,13 +190,13 @@ main(int argc, char *argv[]) {
 	h0.l = h0l;
 	h0.lc = 256;
 	h0.c.b = b;
-	h0.c.bc = bc;
+	h0.c.bc = moptarg;
 	h0.c.d = h0d;
-	h0.c.dc = 32;
+	h0.c.dc = doptarg;
 	h0.c.c = h0c;
-	h0.c.cc = 32;
+	h0.c.cc = coptarg;
 	h0.c.r = h0r;
-	h0.c.rc = 32;
+	h0.c.rc = roptarg;
 	h0.ts = 1000;
 	host_init(&h0);
 
