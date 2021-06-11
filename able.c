@@ -142,6 +142,10 @@ main(int argc, char *argv[]) {
 	void *h0l[256];
 	for (int i = 0; i < 256; i++)
 		h0l[i] = &h0l_[i];
+	int64_t h0d[32];
+	memset(h0d, 0, sizeof(h0d));
+	uint64_t h0c[32];
+	memset(h0c, 0, sizeof(h0c));
 	able_host_t h0;
 	memset(&h0, 0, sizeof(h0));
 	h0.n = &h0n;
@@ -151,6 +155,10 @@ main(int argc, char *argv[]) {
 	h0.lc = 256;
 	h0.c.b = b;
 	h0.c.bc = bc;
+	h0.c.d = h0d;
+	h0.c.dc = 32;
+	h0.c.c = h0c;
+	h0.c.cc = 32;
 	h0.ts = 1000;
 	host_init(&h0);
 
