@@ -1,18 +1,19 @@
 #include <stdatomic.h>
 #include <pthread.h>
 #include <able/able.h>
+#include <able/misc/misc.h>
 #include "host.h"
 #include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
 #include "trap.h"
 
-#define DSO ABLE_CORE_DSO
-#define DSI ABLE_CORE_DSI
+#define DSO ABLE_MISC_CORE_DSO
+#define DSI ABLE_MISC_CORE_DSI
 
-#define DS0 ABLE_CORE_DSV(&host->c, 1)
-#define DS1 ABLE_CORE_DSV(&host->c, 2)
-#define CS0 ABLE_CORE_CSV(&host->c, 1)
+#define DS0 ABLE_MISC_CORE_DSV(&host->c, 1)
+#define DS1 ABLE_MISC_CORE_DSV(&host->c, 2)
+#define CS0 ABLE_MISC_CORE_CSV(&host->c, 1)
 
 #define DSR(C) \
 	(C)->dp = 0;
@@ -55,13 +56,13 @@
 	}
 
 int
-host_init(able_host_t *host) {
+host_init(able_misc_host_t *host) {
 	T(&host->c, 1);
 	return 0;
 }
 
 int
-host_exec(able_host_t *host) {
+host_exec(able_misc_host_t *host) {
 	for (;;) {
 		if (host == trap_data.u) {
 			int q;
@@ -73,10 +74,10 @@ host_exec(able_host_t *host) {
 			}
 		}
 		int y;
-		y = able_host_exec(host);
+		y = able_misc_host_exec(host);
 		switch (y) {
 			case -1: // end of timeslice
-				able_host_node_wait_shim(host->n, NULL, NULL);
+				able_misc_host_node_wait_shim(host->n, NULL, NULL);
 				return y;
 			case -2: // bad memory access
 				T(&host->c, 2);

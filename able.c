@@ -1,6 +1,7 @@
 #include <stdatomic.h>
 #include <pthread.h>
 #include <able/able.h>
+#include <able/misc/misc.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
@@ -201,7 +202,7 @@ main(int argc, char *argv[]) {
 	h0r = calloc(sizeof(uint64_t), roptarg);
 	if (h0r == NULL)
 		err(4, "calloc");
-	able_host_t h0;
+	able_misc_host_t h0;
 	memset(&h0, 0, sizeof(h0));
 	h0.n = &h0n;
 	h0.p = h0p;
