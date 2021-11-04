@@ -1,9 +1,10 @@
 #include <stdatomic.h>
 #include <pthread.h>
 #include <able/able.h>
+#include "term.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "term.h"
+#include <stdbool.h>
 
 int
 term_recv_exec(term_recv_t *term_recv) {
@@ -50,9 +51,20 @@ term_send_exec(term_send_t *term_send) {
 			case 0: { // type
 				size_t bc;
 				bc = m->bc - sizeof(mb->t);
+				if (bc == 0)
+					break;
+				bool f;
+				f = false;
 				int i;
-				for (i = 0; i < bc; i++)
-					putchar(mb->b[i]);
+				for (i = 0; i < bc; i++) {
+					char c;
+					c = mb->b[i];
+					if (c == '\n')
+						f = true;
+					putchar(c);
+				}
+				if (f)
+					fflush(stdout);
 				break;
 			}
 			case 1: // bye
