@@ -67,18 +67,24 @@ main(int argc, char *argv[]) {
 					usage();
 				dopt = true;
 				doptarg = eatoi(optarg);
+				if (doptarg > UINT16_MAX)
+					usage();
 				break;
 			case 'c':
 				if (copt)
 					usage();
 				copt = true;
 				coptarg = eatoi(optarg);
+				if (coptarg > UINT16_MAX)
+					usage();
 				break;
 			case 'r':
 				if (ropt)
 					usage();
 				ropt = true;
 				roptarg = eatoi(optarg);
+				if (roptarg > UINT8_MAX)
+					usage();
 				break;
 			case 'm':
 				if (mopt)
