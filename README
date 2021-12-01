@@ -1,11 +1,15 @@
-WELCOME TO ABLE!
+able
 
 able implements an efficient, portable and secure general-purpose virtual
 machine and virtual network using libable
 
-GETTING STARTED
+REQUIREMENTS
 
-able only requires libable, BSD Make and Clang to build and install
+BSD Make
+Clang
+libable
+
+GETTING STARTED
 
 Building and installing on OpenBSD
 
