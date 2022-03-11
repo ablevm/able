@@ -86,6 +86,15 @@ host_exec(able_host_t *host) {
 				break;
 			case -4: // illegal instruction
 				switch (host->c.i) {
+					case 0x84: { // now ( - t)
+						if (DSO(&host->c, 1))
+							return -7;
+						struct timespec ts;
+						clock_gettime(CLOCK_REALTIME, &ts);
+						DSI(&host->c);
+						DS0 = ts.tv_sec * 1000000000 + ts.tv_nsec;
+						break;
+					}
 					case 0x85: // reset ( - *)
 						DSR(&host->c);
 						CSR(&host->c);
