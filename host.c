@@ -86,12 +86,12 @@ host_exec(able_host_t *host) {
 				break;
 			case -4: // illegal instruction
 				switch (host->c.i) {
-					case 0x85: // reset
+					case 0x85: // reset ( - *)
 						DSR(&host->c);
 						CSR(&host->c);
 						T(&host->c, 0);
 						break;
-					case 0x86: { // depth
+					case 0x86: { // depth ( - u1 u2)
 						if (DSO(&host->c, 2)) {
 							DSR(&host->c);
 							CSR(&host->c);
@@ -108,7 +108,7 @@ host_exec(able_host_t *host) {
 						DS0 = dp;
 						break;
 					}
-					case 0xfe: // debug
+					case 0xfe: // debug ( - ~)
 						P(&host->c, y);
 						break;
 					default:
