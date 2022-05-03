@@ -151,13 +151,13 @@ main(int argc, char *argv[]) {
 	term_recv_t i0;
 	memset(&i0, 0, sizeof(i0));
 
-	able_task_t i0t;
-	memset(&i0t, 0, sizeof(i0t));
-	i0t.ef = (able_task_exec_t)term_recv_exec;
-	i0t.t = &i0;
+	able_task_t ti0;
+	memset(&ti0, 0, sizeof(ti0));
+	ti0.ef = (able_task_exec_t)term_recv_exec;
+	ti0.t = &i0;
 
-	able_wire_t i0w[256];
-	memset(&i0w, 0, sizeof(i0w));
+	able_wire_t wi0[256];
+	memset(&wi0, 0, sizeof(wi0));
 
 	// terminal output
 	void *o0b;
@@ -170,13 +170,13 @@ main(int argc, char *argv[]) {
 	o0.b = o0b;
 	o0.bc = 1024;
 
-	able_task_t o0t;
-	memset(&o0t, 0, sizeof(o0t));
-	o0t.ef = (able_task_exec_t)term_send_exec;
-	o0t.t = &o0;
+	able_task_t to0;
+	memset(&to0, 0, sizeof(to0));
+	to0.ef = (able_task_exec_t)term_send_exec;
+	to0.t = &o0;
 
-	able_wire_t o0w[256];
-	memset(&o0w, 0, sizeof(o0w));
+	able_wire_t wo0[256];
+	memset(&wo0, 0, sizeof(wo0));
 
 	// host 0
 	able_node_t h0n;
@@ -219,13 +219,13 @@ main(int argc, char *argv[]) {
 	h0.ts = 1000;
 	host_init(&h0);
 
-	able_task_t h0t;
-	memset(&h0t, 0, sizeof(h0t));
-	h0t.ef = (able_task_exec_t)host_exec;
-	h0t.t = &h0;
+	able_task_t th0;
+	memset(&th0, 0, sizeof(th0));
+	th0.ef = (able_task_exec_t)host_exec;
+	th0.t = &h0;
 
-	able_wire_t h0w[256];
-	memset(&h0w, 0, sizeof(h0w));
+	able_wire_t wh0[256];
+	memset(&wh0, 0, sizeof(wh0));
 
 	trap_data.u = &h0;
 	signal(SIGINT, trap);
@@ -233,18 +233,18 @@ main(int argc, char *argv[]) {
 	// virtual network config
 
 	// h0.p[0]<-i0.l
-	able_wire_bind(&h0w[1], &h0.p[0], 1, &h0n);
-	able_wire_join(&h0w[1], &i0.l);
+	able_wire_bind(&wh0[1], &h0.p[0], 1, &h0n);
+	able_wire_join(&wh0[1], &i0.l);
 	// o0.p<-h0.l[0]
-	able_wire_bind(&o0w[0], &o0.p, 0, &o0.n);
-	able_wire_join(&o0w[0], h0.l[0]);
+	able_wire_bind(&wo0[0], &o0.p, 0, &o0.n);
+	able_wire_join(&wo0[0], h0.l[0]);
 	// h0.p[0]<-o0.l
-	able_wire_bind(&h0w[0], &h0.p[0], 0, &h0n);
-	able_wire_join(&h0w[0], &o0.l);
+	able_wire_bind(&wh0[0], &h0.p[0], 0, &h0n);
+	able_wire_join(&wh0[0], &o0.l);
 
-	able_task_fork_exec(&i0t);
-	able_task_fork_exec(&o0t);
-	able_task_exec(&h0t);
+	able_task_fork_exec(&ti0);
+	able_task_fork_exec(&to0);
+	able_task_exec(&th0);
 
 	// should not happen
 	return 2;
