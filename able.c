@@ -157,9 +157,6 @@ main(int argc, char *argv[]) {
 	ti0.ef = (able_task_exec_t)term_recv_exec;
 	ti0.t = &i0;
 
-	able_wire_t wi0[256];
-	memset(&wi0, 0, sizeof(wi0));
-
 	// terminal output
 	void *o0b;
 	o0b = malloc(1024);
@@ -176,15 +173,13 @@ main(int argc, char *argv[]) {
 	to0.ef = (able_task_exec_t)term_send_exec;
 	to0.t = &o0;
 
-	able_wire_t wo0[256];
-	memset(&wo0, 0, sizeof(wo0));
-
 	// host 0
 	able_node_t h0n;
 	able_node_init(&h0n);
-
-	able_port_t h0p[256];
-	memset(h0p, 0, sizeof(h0p));
+	able_edge_t h0e[256];
+	memset(h0e, 0, sizeof(h0e));
+	able_misc_host_buff_t h0b[256];
+	memset(h0b, 0, sizeof(h0b));
 	able_link_t h0l_[256];
 	memset(h0l_, 0, sizeof(h0l_));
 	void *h0l[256];
@@ -205,8 +200,10 @@ main(int argc, char *argv[]) {
 	able_misc_host_t h0;
 	memset(&h0, 0, sizeof(h0));
 	h0.n = &h0n;
-	h0.p = h0p;
-	h0.pc = 256;
+	h0.e = h0e;
+	h0.ec = 256;
+	h0.b = h0b;
+	h0.bc = 256;
 	h0.l = h0l;
 	h0.lc = 256;
 	h0.c.b = &b[boptarg];
@@ -225,23 +222,15 @@ main(int argc, char *argv[]) {
 	th0.ef = (able_task_exec_t)host_exec;
 	th0.t = &h0;
 
-	able_wire_t wh0[256];
-	memset(&wh0, 0, sizeof(wh0));
-
 	trap_data.u = &h0;
 	signal(SIGINT, trap);
 
 	// virtual network config
 
-	// h0.p[0]<-i0.l
-	able_wire_bind(&wh0[1], &h0.p[0], 1, &h0n);
-	able_wire_join(&wh0[1], &i0.l);
-	// o0.p<-h0.l[0]
-	able_wire_bind(&wo0[0], &o0.p, 0, &o0.n);
-	able_wire_join(&wo0[0], h0.l[0]);
-	// h0.p[0]<-o0.l
-	able_wire_bind(&wh0[0], &h0.p[0], 0, &h0n);
-	able_wire_join(&wh0[0], &o0.l);
+	// host 0
+	able_link_join(&i0.l, &h0.e[0], 1, h0.n);
+	able_link_join(h0.l[0], &o0.e, 0, &o0.n);
+	able_link_join(&o0.l, &h0.e[0], 0, h0.n);
 
 	able_task_fork_exec(&ti0);
 	able_task_fork_exec(&to0);

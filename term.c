@@ -27,7 +27,7 @@ term_recv_exec(term_recv_t *term_recv) {
 			mb.b[bc++] = c;
 		if (q == 1 || c == '\n' || bc == sizeof(mb.b)) {
 			mb.t = 0;
-			while (able_link_send(&term_recv->l, &mb, sizeof(mb.t) + bc) < 0);
+			while (able_mesg_link_send(&term_recv->l, &mb, sizeof(mb.t) + bc) < 0);
 			bc = 0;
 		}
 	}
@@ -37,11 +37,25 @@ term_recv_exec(term_recv_t *term_recv) {
 
 int
 term_send_exec(term_send_t *term_send) {
+	uint8_t *r;
+	r = NULL;
+	size_t rc;
+	rc = 0;
 	for (;;) {
-		while (able_port_clip(&term_send->p, term_send->b, term_send->bc) < 0);
-		able_port_mesg_t *m;
-		while ((m = able_port_recv(&term_send->p)) == NULL)
-			able_node_wait(&term_send->n, &term_send->p.e, NULL);
+		if (rc == 0) {
+			int y;
+			while((y = able_edge_clip(&term_send->e, term_send->b, term_send->bc)) < 0);
+			if (y == 0)
+				r = term_send->b;
+			while((rc += able_edge_recv(&term_send->e)) == 0)
+				able_node_wait(&term_send->n, &term_send->e, NULL);
+		}
+		able_mesg_t *m;
+		if (rc < sizeof(*m))
+			continue;
+		m = (able_mesg_t *)r;
+		r += m->sc;
+		rc -= m->sc;
 		struct {
 			uint8_t t;
 			uint8_t b[0];
