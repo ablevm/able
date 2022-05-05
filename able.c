@@ -140,9 +140,9 @@ main(int argc, char *argv[]) {
 	ifd = open(ifn, O_RDWR);
 	if (ifd == -1)
 		err(3, "open");
-	uint8_t *b;
-	b = mmap(NULL, moptarg, PROT_READ|PROT_WRITE, MAP_SHARED, ifd, 0);
-	if (b == MAP_FAILED)
+	uint8_t *m;
+	m = mmap(NULL, moptarg, PROT_READ|PROT_WRITE, MAP_SHARED, ifd, 0);
+	if (m == MAP_FAILED)
 		err(3, "mmap");
 	close(ifd);
 
@@ -158,15 +158,15 @@ main(int argc, char *argv[]) {
 	ti0.t = &i0;
 
 	// terminal output
-	void *o0b;
-	o0b = malloc(1024);
-	if (o0b == NULL)
+	void *o0s;
+	o0s = malloc(1024);
+	if (o0s == NULL)
 		err(4, "malloc");
 	term_send_t o0;
 	memset(&o0, 0, sizeof(o0));
 	able_node_init(&o0.n);
-	o0.b = o0b;
-	o0.bc = 1024;
+	o0.s = o0s;
+	o0.sc = 1024;
 
 	able_task_t to0;
 	memset(&to0, 0, sizeof(to0));
@@ -206,8 +206,8 @@ main(int argc, char *argv[]) {
 	h0.bc = 256;
 	h0.l = h0l;
 	h0.lc = 256;
-	h0.c.b = &b[boptarg];
-	h0.c.bc = moptarg - boptarg;
+	h0.c.m = m + boptarg;
+	h0.c.mc = moptarg - boptarg;
 	h0.c.d = h0d;
 	h0.c.dc = doptarg;
 	h0.c.c = h0c;

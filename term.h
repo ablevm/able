@@ -9,8 +9,8 @@ typedef struct {
 	able_node_t n;
 	able_edge_t e;
 	able_link_t l;
-	uint8_t *b;
-	size_t bc;
+	uint8_t *s;
+	size_t sc;
 } term_send_t;
 
 int

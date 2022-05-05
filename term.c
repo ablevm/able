@@ -44,9 +44,9 @@ term_send_exec(term_send_t *term_send) {
 	for (;;) {
 		if (rc == 0) {
 			int y;
-			while((y = able_edge_clip(&term_send->e, term_send->b, term_send->bc)) < 0);
+			while((y = able_edge_clip(&term_send->e, term_send->s, term_send->sc)) < 0);
 			if (y == 0)
-				r = term_send->b;
+				r = term_send->s;
 			while((rc += able_edge_recv(&term_send->e)) == 0)
 				able_node_wait(&term_send->n, &term_send->e, NULL);
 		}
