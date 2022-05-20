@@ -43,7 +43,7 @@
 		d1 = (C)->dp < 2 ? 0 : DS1; \
 		uint64_t c0; \
 		c0 = (C)->cp < 1 ? 0 : CS0; \
-		fprintf(stderr, "%02"PRIX8"(%d) %"PRId64" %08"PRIX64" %"PRId64"/%"PRIX64" %"PRId64"/%"PRIX64" (%"PRIu8"); %"PRId64"/%"PRIX64" (%"PRIu8")\n", \
+		fprintf(stderr, "%02"PRIX8"(%d) %"PRId64" %08"PRIX64" %"PRId64"/%"PRIX64" %"PRId64"/%"PRIX64" (%"PRIu16"); %"PRId64"/%"PRIX64" (%"PRIu16")\n", \
 			(C)->i, \
 			(Y), \
 			(C)->ts, \
